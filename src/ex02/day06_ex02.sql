@@ -1,6 +1,9 @@
-SELECT person.name, pizza_name, price, 
-ROUND(price * (1 - discount/100)) AS discount_price, pizzeria.name AS pizzeria_name
-FROM person_discounts AS pd INNER JOIN menu ON menu.pizzeria_id = pd.pizzeria_id
-INNER JOIN person ON person.id = pd.person_id
-INNER JOIN pizzeria ON pizzeria.id = pd.pizzeria_id
-ORDER BY person.name, pizza_name;
+SELECT p.name, m.pizza_name, m.price,
+        ROUND(m.price - (m.price * pd.discount / 100)) AS discount_price,
+        piz.name AS pizzeria_name
+FROM person_order po
+JOIN menu m ON po.menu_id = m.id
+JOIN person_discounts pd ON po.person_id = pd.person_id AND m.pizzeria_id = pd.pizzeria_id
+JOIN person p ON pd.person_id = p.id
+JOIN pizzeria piz ON pd.pizzeria_id = piz.id
+ORDER BY 1, 2;
